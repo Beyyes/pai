@@ -112,9 +112,9 @@ class build_center:
             self.docker_cli
         )
 
-        base_image = image_build_worker.get_dependency()
-        if base_image != None:
-            self.build(base_image)
+        # base_image = image_build_worker.get_dependency()
+        # if base_image != None:
+        #     self.build(base_image)
 
         if image_build_worker.need_hadoop_binary():
             self.hadoop_ai_build()
