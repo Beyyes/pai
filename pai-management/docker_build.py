@@ -306,6 +306,8 @@ def hadoop_binary_prepare(custom_hadoop_path, hadoop_version):
                 "cp {0} src/hadoop-run/hadoop".format( custom_hadoop_path ),
                 shell = True
             )
+
+            print">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  using custom" + "cp {0} src/hadoop-run/hadoop".format( custom_hadoop_path )
         except subprocess.CalledProcessError as cperr:
             logger.error("failed to cp hadoop binary")
             sys.exit(1)
@@ -316,6 +318,7 @@ def hadoop_binary_prepare(custom_hadoop_path, hadoop_version):
                 "wget {0} -P src/hadoop-run/hadoop".format( url ),
                 shell = True
             )
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!  using wget" + "wget {0} -P src/hadoop-run/hadoop".format( url ))
         except subprocess.CalledProcessError as wgeterr:
             logger.error("failed to wget hadoop binary")
             sys.exit(1)
@@ -339,6 +342,8 @@ def main():
 
     setup_logging()
 
+
+
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--path', required=True, help="path to cluster configuration file")
     parser.add_argument('-n', '--imagename', default='all', help="Build and push target image to the registry")
@@ -347,6 +352,10 @@ def main():
 
     cluster_config = loadClusterObjectModel( args.path )
     service_config = load_yaml_config( "service.yaml" )
+    image_list = service_config['imagelist']
+    for image in image_list:
+        print image
+    return
 
     hadoop_version = cluster_config['clusterinfo']['hadoopinfo']['hadoopversion']
     custom_hadoop_path = cluster_config['clusterinfo']['hadoopinfo']['custom_hadoop_binary_path']
