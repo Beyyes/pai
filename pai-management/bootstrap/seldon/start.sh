@@ -79,3 +79,18 @@ sleep 5
 
 #helm install seldon-core-analytics --name seldon-core-analytics --set grafana_prom_admin_password=password --set persistence.enabled=false --repo https://storage.googleapis.com/seldon-charts  --namespace seldon
 
+# deploy seldon portal
+kubectl create clusterrolebinding seldon-binding --clusterrole=cluster-admin --serviceaccount=seldon:default
+
+sudo helm install seldon-core-analytics --name seldon-core-analytics --set grafana_prom_admin_password=password --set persistence.enabled=false --repo https://storage.googleapis.com/seldon-charts --namespace seldon
+
+# deploy seldon application
+kubectl apply -f sklearn_iris_deployment.json -n seldon
+
+# get token
+sudo apt-get install jq
+SERVER=$(kubectl get  svc/seldon-apiserver -n seldon -o jsonpath='{.spec.clusterIP}')
+TOKEN=`curl -s -H "Accept: application/json" oauth-key:oauth-secret@$SERVER:8080/oauth/token -d grant_type=client_credentials | jq -r '.access_token'`
+
+# send request
+curl -s -H "Content-Type:application/json" -H "Accept: application/json" -H "Authorization: Bearer $TOKEN" $SERVER:8080/api/v0.1/predictions -d '{"meta":{},"data":{"names":["sepal lengt (cm)","sepal width (cm)", "petal length (cm)","petal width (cm)"],"ndarray":[[5.1,3.5,1.4,0.2]]}}'
