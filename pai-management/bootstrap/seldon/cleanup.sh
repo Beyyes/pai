@@ -23,13 +23,6 @@ kubectl delete svc spark-historyserver-web
 kubectl delete svc spark-base
 kubectl delete sts spark-base
 
-
-    
-
-    kubectl label nodes spark-master sparkrole-
-    
-
-    
-
+kubectl label nodes spark-master sparkrole-
 
 popd > /dev/null

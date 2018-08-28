@@ -62,7 +62,7 @@ done
 while [ -z "$(kubectl get crd | grep ^seldondeployments)" ];
 do
     echo "install seldon-core-crd"
-    helm install seldon-core-crd --name seldon-core-crd --repo https://storage.googleapis.com/seldon-charts
+    sudo helm install seldon-core-crd --name seldon-core-crd --repo https://storage.googleapis.com/seldon-charts
     echo "sleep 5 secs waitting for tiller pod ready"
     sleep 5
 done
@@ -89,7 +89,7 @@ kubectl apply -f sklearn_iris_deployment.json -n seldon
 
 # get token
 sudo apt-get install jq
-SERVER=$(kubectl get  svc/seldon-apiserver -n seldon -o jsonpath='{.spec.clusterIP}')
+SERVER=$(kubectl get  svc/seldon-core-seldon-apiserver -n seldon -o jsonpath='{.spec.clusterIP}')
 TOKEN=`curl -s -H "Accept: application/json" oauth-key:oauth-secret@$SERVER:8080/oauth/token -d grant_type=client_credentials | jq -r '.access_token'`
 
 # send request
