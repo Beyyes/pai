@@ -25,4 +25,10 @@ kubectl delete sts spark-base
 
 kubectl label nodes spark-master sparkrole-
 
+kubectl delete svc --all -n seldon
+kubectl delete deploy --all -n seldon
+kubectl delete job --all -n seldon
+kubectl delete ds --all -n seldon
+kubectl delete po --all -n seldon
+
 popd > /dev/null

@@ -20,7 +20,7 @@
 
     
 
-    kubectl label nodes spark-master sparkrole=master
+kubectl label nodes spark-master sparkrole=master
     
 
     
