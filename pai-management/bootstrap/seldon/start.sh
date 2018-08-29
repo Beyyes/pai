@@ -62,14 +62,14 @@ done
 while [ -z "$(kubectl get crd | grep ^seldondeployments)" ];
 do
     echo "install seldon-core-crd"
-    sudo helm install seldon-core-crd --name seldon-core-crd --repo https://storage.googleapis.com/seldon-charts
+    sudo helm install seldon-core-crd --version 0.1.6 --name seldon-core-crd --repo https://storage.googleapis.com/seldon-charts
     echo "sleep 5 secs waitting for tiller pod ready"
     sleep 5
 done
 
 echo "install seldon-core"
 
-helm install seldon-core --name seldon-core --repo https://storage.googleapis.com/seldon-charts --set cluster_manager.rbac=true --namespace seldon
+sudo helm install seldon-core --version 0.1.6 --name seldon-core --repo https://storage.googleapis.com/seldon-charts --set cluster_manager.rbac=true --namespace seldon
 
 echo "install seldon core done"
 
@@ -82,14 +82,14 @@ sleep 5
 # deploy seldon portal
 kubectl create clusterrolebinding seldon-binding --clusterrole=cluster-admin --serviceaccount=seldon:default
 
-sudo helm install seldon-core-analytics --name seldon-core-analytics --set grafana_prom_admin_password=password --set persistence.enabled=false --repo https://storage.googleapis.com/seldon-charts --namespace seldon
+sudo helm install seldon-core-analytics --version 0.2 --name seldon-core-analytics --set grafana_prom_admin_password=password --set persistence.enabled=false --repo https://storage.googleapis.com/seldon-charts --namespace seldon
 
 # deploy seldon application
-kubectl apply -f sklearn_iris_deployment.json -n seldon
+kubectl apply -f sklearn_iris_deployment_tmp.json -n seldon
 
 # get token
 sudo apt-get install jq
-SERVER=$(kubectl get  svc/seldon-core-seldon-apiserver -n seldon -o jsonpath='{.spec.clusterIP}')
+SERVER=$(kubectl get  svc/seldon-apiserver -n seldon -o jsonpath='{.spec.clusterIP}')
 TOKEN=`curl -s -H "Accept: application/json" oauth-key:oauth-secret@$SERVER:8080/oauth/token -d grant_type=client_credentials | jq -r '.access_token'`
 
 # send request

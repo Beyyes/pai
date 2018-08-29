@@ -1,5 +1,5 @@
 {
-    "apiVersion": "machinelearning.seldon.io/v1alpha2",
+    "apiVersion": "machinelearning.seldon.io/v1alpha1",
     "kind": "SeldonDeployment",
     "metadata": {
         "labels": {
@@ -17,7 +17,7 @@
         "oauth_secret": "oauth-secret",
         "predictors": [
             {
-                "componentSpecs": {
+                "componentSpec": {
                     "spec": {
                         "containers": [
                             {
